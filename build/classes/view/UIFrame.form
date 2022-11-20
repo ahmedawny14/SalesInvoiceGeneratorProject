@@ -239,8 +239,8 @@
     </Container>
     <Component class="javax.swing.JButton" name="AdditemBtn">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Save"/>
-        <Property name="actionCommand" type="java.lang.String" value="Add New Item"/>
+        <Property name="text" type="java.lang.String" value="Create Item"/>
+        <Property name="actionCommand" type="java.lang.String" value="Create Item"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="AdditemBtnActionPerformed"/>
@@ -251,7 +251,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="DeleteItemBtn">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Cancel"/>
+        <Property name="text" type="java.lang.String" value="Delete Item"/>
         <Property name="toolTipText" type="java.lang.String" value=""/>
       </Properties>
       <Events>

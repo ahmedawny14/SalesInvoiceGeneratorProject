@@ -1,9 +1,10 @@
 package controller;
 
-import com.sun.glass.ui.Cursor;
-import java.awt.event.ActionEvent;
+ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -48,12 +49,12 @@ public class Controller implements ActionListener, ListSelectionListener {
 
                 break;
 
-            case "Add New Item":
+            case "Create Item":
 
                 newItem();
                 break;
 
-            case "Cancel":
+            case "Delete Item":
                 deleteItem();
                 break;
 
@@ -148,68 +149,60 @@ public class Controller implements ActionListener, ListSelectionListener {
                 File headerFile = fileChooser.getSelectedFile();
                 Path headerPath = Paths.get(headerFile.getAbsolutePath());
                 List< String> headerLines = Files.readAllLines(headerPath);
- 
+
                 // ArrayList<InvoiceDetails> invoicesArray = new ArrayList<>();
                 ArrayList<InvoiceDetails> invoicesArray = new ArrayList<>();
                 for (String headerLine : headerLines) {
-                    try{
+                    try {
 
-                    String[] headerColumns = headerLine.split(",");
-                    int invoiceNumber = Integer.parseInt(headerColumns[0]);
-                    String invoiceDate = headerColumns[1];
-                    String customerName = headerColumns[2];
+                        String[] headerColumns = headerLine.split(",");
+                        int invoiceNumber = Integer.parseInt(headerColumns[0]);
+                        String invoiceDate = headerColumns[1];
+                        String customerName = headerColumns[2];
 
-                    InvoiceDetails invoice = new InvoiceDetails(invoiceNumber, invoiceDate, customerName);
-                    invoicesArray.add(invoice);
-               
-                    }catch (Exception ex) {
+                        InvoiceDetails invoice = new InvoiceDetails(invoiceNumber, invoiceDate, customerName);
+                        invoicesArray.add(invoice);
+
+                    } catch (Exception ex) {
                         ex.printStackTrace();
                         JOptionPane.showMessageDialog(frame, "Error in line format", "Error", JOptionPane.ERROR_MESSAGE);
+                     
                     }
-                
-                
-                
+
                 }
-                 result = fileChooser.showOpenDialog(frame);
+                result = fileChooser.showOpenDialog(frame);
                 if (result == JFileChooser.APPROVE_OPTION) {
 
                     File itemsFile = fileChooser.getSelectedFile();
                     Path ItemPath = Paths.get(itemsFile.getAbsolutePath());
                     List<String> itemLines = Files.readAllLines(ItemPath);
-                    System.out.println("bbbb");
                     for (String itemLine : itemLines) {
-                        try{
-                        String itemsColumns[] = itemLine.split(",");
-                        int invoiceNumber = Integer.parseInt(itemsColumns[0]);
-                        String ItemName = itemsColumns[1];
-                        double Itemprice = Double.parseDouble(itemsColumns[2]);
-                        int count = Integer.parseInt(itemsColumns[3]);
-                        InvoiceDetails invoiceDetails = null;
-                        for (InvoiceDetails invoice : invoicesArray) {
+                        try {
+                            String itemsColumns[] = itemLine.split(",");
+                            int invoiceNumber = Integer.parseInt(itemsColumns[0]);
+                            String ItemName = itemsColumns[1];
+                            double Itemprice = Double.parseDouble(itemsColumns[2]);
+                            int count = Integer.parseInt(itemsColumns[3]);
+                            InvoiceDetails invoiceDetails = null;
+                            for (InvoiceDetails invoice : invoicesArray) {
 
-                            if (invoice.getNum() == invoiceNumber) {
-                                invoiceDetails = invoice;
+                                if (invoice.getNum() == invoiceNumber) {
+                                    invoiceDetails = invoice;
 
-                                break;
+                                    break;
+                                }
+
                             }
+                            InvoiceItems item = new InvoiceItems(ItemName, Itemprice, count, invoiceDetails);
+                            invoiceDetails.getItems().add(item);
 
-                        }
-                        InvoiceItems item = new InvoiceItems(ItemName, Itemprice, count, invoiceDetails);
-                        invoiceDetails.getItems().add(item);
-
-                    
-                        }catch (Exception ex) {
+                        } catch (Exception ex) {
                             ex.printStackTrace();
                             JOptionPane.showMessageDialog(frame, "Error in line format", "Error", JOptionPane.ERROR_MESSAGE);
-                        }    
-                        
-                        
-                        
-                        
-                        }
-                        
-                        
- 
+                        } 
+
+                    }
+
                 }
                 frame.setInvoices(invoicesArray);
                 InvoiceTableModel invModel = new InvoiceTableModel(invoicesArray);
@@ -219,10 +212,11 @@ public class Controller implements ActionListener, ListSelectionListener {
             }
 
         } catch (IOException io) {
-           io.printStackTrace();
-            JOptionPane.showMessageDialog(frame, "Cannot read file", "Error", JOptionPane.ERROR_MESSAGE);
+            io.printStackTrace();
+            JOptionPane.showMessageDialog(frame, "Load a vaild file", "Error", JOptionPane.ERROR_MESSAGE);
 
-        }
+        } 
+        
     }
 
     private void saveFile() {
@@ -244,30 +238,28 @@ public class Controller implements ActionListener, ListSelectionListener {
 
         }
 
-         try{
-        JFileChooser fileChooser = new JFileChooser();
-        int result = fileChooser.showSaveDialog(frame);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File InvoiceHeader = fileChooser.getSelectedFile();
-            FileWriter fileWriter1 = new FileWriter(InvoiceHeader);
-            fileWriter1.write(invoiceHeaders);
-            fileWriter1.flush();
-            fileWriter1.close();
-            
-            
-            result = fileChooser.showSaveDialog(frame);
+        try {
+            JFileChooser fileChooser = new JFileChooser();
+            int result = fileChooser.showSaveDialog(frame);
             if (result == JFileChooser.APPROVE_OPTION) {
-                File InvoiceLine = fileChooser.getSelectedFile();
-                  FileWriter fileWriter2 = new FileWriter(InvoiceLine);
-                     fileWriter2.write(InvoiceLines);
-                   fileWriter2.flush();
-                fileWriter2.close();
+                File InvoiceHeader = fileChooser.getSelectedFile();
+                FileWriter fileWriter1 = new FileWriter(InvoiceHeader);
+                fileWriter1.write(invoiceHeaders);
+                fileWriter1.flush();
+                fileWriter1.close();
 
+                result = fileChooser.showSaveDialog(frame);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File InvoiceLine = fileChooser.getSelectedFile();
+                    FileWriter fileWriter2 = new FileWriter(InvoiceLine);
+                    fileWriter2.write(InvoiceLines);
+                    fileWriter2.flush();
+                    fileWriter2.close();
+
+                }
             }
-        }
-        }catch (Exception ex){
-            
-            
+        } catch (Exception ex) {
+
         }
     }
 
@@ -282,8 +274,8 @@ public class Controller implements ActionListener, ListSelectionListener {
         String date = invoiceDialog.getInvoiceDateField().getText();
         String CustomerName = invoiceDialog.getCustomerNameField().getText();
         int number = frame.getNextInvoiceNumber();
-          try {
-            String[] dateFields = date.split("-");   
+        try {
+            String[] dateFields = date.split("-");
             if (dateFields.length < 3) {
                 JOptionPane.showMessageDialog(frame, "Wrong date format", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
@@ -293,18 +285,19 @@ public class Controller implements ActionListener, ListSelectionListener {
                 if (day > 31 || month > 12) {
                     JOptionPane.showMessageDialog(frame, "Wrong date format", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-        InvoiceDetails invoiceDetails = new InvoiceDetails(number, date, CustomerName);
-        frame.getInvoices().add(invoiceDetails);
-        frame.getInvModel().fireTableDataChanged();
-        invoiceDialog.setVisible(false);
-        invoiceDialog.dispose();
-        invoiceDialog = null;
-    }
+                    InvoiceDetails invoiceDetails = new InvoiceDetails(number, date, CustomerName);
+                    frame.getInvoices().add(invoiceDetails);
+                    frame.getInvModel().fireTableDataChanged();
+                    invoiceDialog.setVisible(false);
+                    invoiceDialog.dispose();
+                    invoiceDialog = null;
+                }
             }
-          }catch (Exception ex) {
+        } catch (Exception ex) {
             JOptionPane.showMessageDialog(frame, "Wrong date format", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
     private void createRowCancel() {
         itemsDialog.setVisible(false);
         itemsDialog.dispose();

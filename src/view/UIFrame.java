@@ -102,15 +102,15 @@ public class UIFrame extends javax.swing.JFrame {
         ItemsTable.setName("Invoices Items"); // NOI18N
         jScrollPane2.setViewportView(ItemsTable);
 
-        AdditemBtn.setText("Save");
-        AdditemBtn.setActionCommand("Add New Item");
+        AdditemBtn.setText("Create Item");
+        AdditemBtn.setActionCommand("Create Item");
         AdditemBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 AdditemBtnActionPerformed(evt);
             }
         });
 
-        DeleteItemBtn.setText("Cancel");
+        DeleteItemBtn.setText("Delete Item");
         DeleteItemBtn.setToolTipText("");
         DeleteItemBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
